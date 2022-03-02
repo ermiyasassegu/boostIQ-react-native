@@ -9,6 +9,7 @@ import {useMedia, useTag} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import {useFocusEffect} from '@react-navigation/native';
 import {appId} from '../utils/variables';
+import {Video} from 'expo-av';
 
 const Post = ({navigation}) => {
   const [image, setImage] = useState(
