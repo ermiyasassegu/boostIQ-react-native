@@ -1,13 +1,32 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {SearchBar} from 'react-native-elements';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, StyleSheet, FlatList} from 'react-native';
 import COLORS from '../utils/colors';
+import DataItem from './DataItem';
+import {useMedia} from '../hooks/ApiHooks';
+import PropTypes from 'prop-types';
 
-const SearchView = () => {
+const SearchView = ({navigation}) => {
+  const [filteredData, setFilteredData] = useState([]);
+  //const [masterData, setMasterData] = useState([]);
   const [search, setSearch] = useState('');
+  const {mediaArray} = useMedia(false);
 
-  const updateSearch = (text) => {
-    setSearch(search);
+  const searchFilter = (text) => {
+    if (text) {
+      const newData = mediaArray.filter((item) => {
+        const itemData = item.title
+          ? item.title.toUpperCase()
+          : ''.toUpperCase();
+        const textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1;
+      });
+      setFilteredData(newData);
+      setSearch(text);
+    } else {
+      setFilteredData(mediaArray);
+      setSearch(text);
+    }
   };
 
   return (
@@ -15,8 +34,15 @@ const SearchView = () => {
       <SearchBar
         style={{backgroundColor: COLORS.light, borderRadius: 30}}
         placeholder="Search Here..."
-        onChangeText={updateSearch}
+        onChangeText={(text) => searchFilter(text)}
         value={search}
+      />
+      <FlatList
+        data={filteredData}
+        keyExtractor={(item) => item.file_id.toString()}
+        renderItem={({item}) => (
+          <DataItem navigation={navigation} singleMedia={item} />
+        )}
       />
     </View>
   );
@@ -28,6 +54,10 @@ const styles = StyleSheet.create({
     margin: 10,
   },
 });
+
+SearchView.propTypes = {
+  navigation: PropTypes.object.isRequired,
+};
 
 export default SearchView;
 

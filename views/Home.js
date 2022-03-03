@@ -12,7 +12,7 @@ const Home = ({navigation}) => {
     <SafeAreaView style={GlobalStyles.AndroidSafeArea}>
       <View style={{backgroundColor: 'white', padding: 15}}>
         <Header navigation={navigation} />
-        <SearchView />
+        <SearchView navigation={navigation} />
       </View>
       <ListCatagories />
       <List navigation={navigation} />
