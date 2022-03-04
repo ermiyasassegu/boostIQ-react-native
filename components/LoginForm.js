@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {View, TouchableOpacity} from 'react-native';
+import {View, TouchableOpacity, Alert} from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
 import {MainContext} from '../contexts/MainContext';
 import {useLogin} from '../hooks/ApiHooks';
@@ -28,7 +28,7 @@ const LoginForm = ({navigation}) => {
       setUser(userData.user);
       setIsLoggedIn(true);
     } catch (error) {
-      console.error(error);
+      Alert.alert('Please check your username and password');
     }
   };
 

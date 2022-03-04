@@ -13,7 +13,9 @@ const SearchView = ({navigation}) => {
   const {mediaArray} = useMedia(false);
 
   const searchFilter = (text) => {
+    // Check if searched text is not blank
     if (text) {
+      //  Filter the masterData Update FilteredData
       const newData = mediaArray.filter((item) => {
         const itemData = item.title
           ? item.title.toUpperCase()
@@ -24,6 +26,7 @@ const SearchView = ({navigation}) => {
       setFilteredData(newData);
       setSearch(text);
     } else {
+      // Inserted text is blank Update FilteredData with masterData
       setFilteredData(mediaArray);
       setSearch(text);
     }
@@ -56,7 +59,7 @@ const styles = StyleSheet.create({
 });
 
 SearchView.propTypes = {
-  navigation: PropTypes.object.isRequired,
+  navigation: PropTypes.object,
 };
 
 export default SearchView;

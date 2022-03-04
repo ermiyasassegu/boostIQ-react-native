@@ -205,4 +205,33 @@ const useFavourite = () => {
   return {postFavourite, getFavouritesByFileId, deleteFavourite};
 };
 
-export {useMedia, useLogin, useUser, useTag, useFavourite};
+const useComment = () => {
+  const postComment = async (fileId, token) => {
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': token,
+      },
+      body: JSON.stringify({file_id: fileId}),
+    };
+    return await doFetch(`${baseUrl}comments`, options);
+  };
+
+  const getCommentsByFileId = async (fileId) => {
+    return await doFetch(`${baseUrl}comments/file/${fileId}`);
+  };
+
+  const deleteComment = async (fileId, token) => {
+    const options = {
+      method: 'DELETE',
+      headers: {
+        'x-access-token': token,
+      },
+    };
+    return await doFetch(`${baseUrl}comments/file/${fileId}`, options);
+  };
+  return {postComment, getCommentsByFileId, deleteComment};
+};
+
+export {useMedia, useLogin, useUser, useTag, useFavourite, useComment};

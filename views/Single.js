@@ -11,12 +11,14 @@ import PropTypes from 'prop-types';
 import {uploadsUrl} from '../utils/variables';
 import {Avatar, Button, Card, ListItem, Text} from 'react-native-elements';
 import {Video} from 'expo-av';
-import {useFavourite, useTag, useUser} from '../hooks/ApiHooks';
+import {useComment, useFavourite, useTag, useUser} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MainContext} from '../contexts/MainContext';
 import postIcons from '../utils/postIcons';
+import {Navigation} from 'react-native-navigation';
+import Comment from './Comment';
 
-const Single = ({route}) => {
+const Single = ({route, Navigation}) => {
   // console.log('route:', route);
   const {file} = route.params;
   const videoRef = useRef(null);
@@ -28,6 +30,10 @@ const Single = ({route}) => {
   const [avatar, setAvatar] = useState('http://placekitten.com/180');
   const [likes, setLikes] = useState([]);
   const [userLike, setUserLike] = useState(false);
+  const {postComment, getCommentsByFileId, deleteComment} = useComment();
+  const [comments, setComments] = useState([]);
+  const [userComment, setUserCommment] = useState(false);
+
   const {user} = useContext(MainContext);
 
   const fetchOwner = async () => {
@@ -70,6 +76,20 @@ const Single = ({route}) => {
       console.error('fetchLikes() error', error);
     }
   };
+  const fetchComments = async () => {
+    try {
+      const commentsData = await getCommentsByFileId(file.file_id);
+      setComments(commentsData);
+      // To check if user id of of logged in user is included in data and
+      // set state userLike accordingly
+      commentsData.forEach((comment) => {
+        comment.user_id === user.user_id && setUserCommment(true);
+      });
+    } catch (error) {
+      // notify error to user in the likes
+      console.error('fetchComments() error', error);
+    }
+  };
 
   const createFavourite = async () => {
     try {
@@ -93,6 +113,17 @@ const Single = ({route}) => {
     }
   };
 
+  const createComment = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      const response = await postComment(file.file_id, token);
+      response && setUserCommment(true);
+    } catch (error) {
+      // error createFavourites
+      console.error('createComment error', error);
+    }
+  };
+
   useEffect(() => {
     fetchOwner();
     fetchAvatar();
@@ -100,9 +131,11 @@ const Single = ({route}) => {
 
   useEffect(() => {
     fetchLikes();
-  }, [userLike]);
+    fetchComments();
+  }, [userLike, userComment]);
 
   //console.log('likes', likes, 'userlike', userLike);
+  console.log('comments', comments, 'userComment', userComment);
 
   return (
     <ScrollView>
@@ -145,7 +178,14 @@ const Single = ({route}) => {
         <Text style={styles.description}>{file.description}</Text>
 
         <ListItem>
-          <Text>{likes.length} Likes </Text>
+          <View>
+            {!!likes.length && (
+              <Text>
+                {likes.length}
+                {likes.length > 1 ? ' Likes' : ' Like'}{' '}
+              </Text>
+            )}
+          </View>
           {userLike ? (
             <TouchableOpacity
               disabled={!userLike}
@@ -172,6 +212,7 @@ const Single = ({route}) => {
             </TouchableOpacity>
           )}
         </ListItem>
+        <Comment Navigation={Navigation} />
       </Card>
     </ScrollView>
   );

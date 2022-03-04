@@ -1,5 +1,11 @@
 import React, {useCallback, useContext, useState} from 'react';
-import {Alert, Image, StyleSheet, View} from 'react-native';
+import {
+  Alert,
+  Image,
+  StyleSheet,
+  View,
+  KeyboardAvoidingView,
+} from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
 import {useUser} from '../hooks/ApiHooks';
 import {Input, Button} from 'react-native-elements';
@@ -15,12 +21,13 @@ const EditProfile = ({navigation}) => {
   const [image, setImage] = useState(
     'https://img.icons8.com/metro/26/000000/user-male-circle.png'
   );
-  const [type, setType] = useState('image');
   const [imageSelected, setImageSelected] = useState(false);
+
   const {
     control,
     handleSubmit,
     formState: {errors},
+    setValue,
     getValues,
   } = useForm({
     defaultValues: {
@@ -35,18 +42,19 @@ const EditProfile = ({navigation}) => {
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      quality: 0.5,
-    });
+    if (true) {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        quality: 0.5,
+      });
 
-    console.log(result);
+      console.log(result);
 
-    if (!result.cancelled) {
-      setImage(result.uri);
-      setImageSelected(true);
-      setType(result.type);
+      if (!result.cancelled) {
+        setImage(result.uri);
+        setImageSelected(true);
+      }
     }
   };
 
@@ -88,148 +96,152 @@ const EditProfile = ({navigation}) => {
   };
 
   return (
-    <View>
-      <Image
-        source={{uri: image}}
-        style={styles.image}
-        onPress={pickImage}
-      ></Image>
-      <Controller
-        control={control}
-        rules={{
-          required: {value: true, message: 'This is required.'},
-          minLength: {
-            value: 3,
-            message: 'Username has to be at least 3 characters.',
-          },
-          validate: async (value) => {
-            try {
-              const available = await checkUsername(value);
-              if (available || user.username === value) {
-                return true;
-              } else {
-                return 'Username is already taken.';
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : ''}
+      style={styles.container}
+    >
+      <View>
+        <Image
+          source={{uri: image}}
+          style={styles.image}
+          onPress={pickImage}
+        ></Image>
+        <Controller
+          control={control}
+          rules={{
+            required: {value: true, message: 'This is required.'},
+            minLength: {
+              value: 3,
+              message: 'Username has to be at least 3 characters.',
+            },
+            validate: async (value) => {
+              try {
+                const available = await checkUsername(value);
+                if (available || user.username === value) {
+                  return true;
+                } else {
+                  return 'Username is already taken.';
+                }
+              } catch (error) {
+                throw new Error(error.message);
               }
-            } catch (error) {
-              throw new Error(error.message);
-            }
-          },
-        }}
-        render={({field: {onChange, onBlur, value}}) => (
-          <Input
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-            autoCapitalize="none"
-            placeholder="Username"
-            errorMessage={errors.username && errors.username.message}
-          />
-        )}
-        name="username"
-      />
+            },
+          }}
+          render={({field: {onChange, onBlur, value}}) => (
+            <Input
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              autoCapitalize="none"
+              placeholder="Username"
+              errorMessage={errors.username && errors.username.message}
+            />
+          )}
+          name="username"
+        />
 
-      <Controller
-        control={control}
-        rules={{
-          minLength: {
-            value: 5,
-            message: 'Password has to be at least 5 characters.',
-          },
-          /*
+        <Controller
+          control={control}
+          rules={{
+            minLength: {
+              value: 5,
+              message: 'Password has to be at least 5 characters.',
+            },
+            /*
           pattern: {
             value: /(?=.*[\p{Lu}])(?=.*[0-9]).{8,}/u,
             message: 'Min 8, Uppercase, Number',
           },
           */
-        }}
-        render={({field: {onChange, onBlur, value}}) => (
-          <Input
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-            autoCapitalize="none"
-            secureTextEntry={true}
-            placeholder="Password"
-            errorMessage={errors.password && errors.password.message}
-          />
-        )}
-        name="password"
-      />
+          }}
+          render={({field: {onChange, onBlur, value}}) => (
+            <Input
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              autoCapitalize="none"
+              secureTextEntry={true}
+              placeholder="Password"
+              errorMessage={errors.password && errors.password.message}
+            />
+          )}
+          name="password"
+        />
 
-      <Controller
-        control={control}
-        rules={{
-          validate: (value) => {
-            const {password} = getValues();
-            if (value === password) {
-              return true;
-            } else {
-              return 'Passwords do not match.';
-            }
-          },
-        }}
-        render={({field: {onChange, onBlur, value}}) => (
-          <Input
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-            autoCapitalize="none"
-            secureTextEntry={true}
-            placeholder="Confirm Password"
-            errorMessage={
-              errors.confirmPassword && errors.confirmPassword.message
-            }
-          />
-        )}
-        name="confirmPassword"
-      />
+        <Controller
+          control={control}
+          rules={{
+            validate: (value) => {
+              const {password} = getValues();
+              if (value === password) {
+                return true;
+              } else {
+                return 'Passwords do not match.';
+              }
+            },
+          }}
+          render={({field: {onChange, onBlur, value}}) => (
+            <Input
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              autoCapitalize="none"
+              secureTextEntry={true}
+              placeholder="Confirm Password"
+              errorMessage={
+                errors.confirmPassword && errors.confirmPassword.message
+              }
+            />
+          )}
+          name="confirmPassword"
+        />
 
-      <Controller
-        control={control}
-        rules={{
-          required: {value: true, message: 'This is required.'},
-          pattern: {
-            value: /\S+@\S+\.\S+$/,
-            message: 'Has to be valid email.',
-          },
-        }}
-        render={({field: {onChange, onBlur, value}}) => (
-          <Input
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-            autoCapitalize="none"
-            placeholder="Email"
-            errorMessage={errors.email && errors.email.message}
-          />
-        )}
-        name="email"
-      />
+        <Controller
+          control={control}
+          rules={{
+            required: {value: true, message: 'This is required.'},
+            pattern: {
+              value: /\S+@\S+\.\S+$/,
+              message: 'Has to be valid email.',
+            },
+          }}
+          render={({field: {onChange, onBlur, value}}) => (
+            <Input
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              autoCapitalize="none"
+              placeholder="Email"
+              errorMessage={errors.email && errors.email.message}
+            />
+          )}
+          name="email"
+        />
 
-      <Controller
-        control={control}
-        rules={{
-          minLength: {
-            value: 3,
-            message: 'Full name has to be at least 3 characters.',
-          },
-        }}
-        render={({field: {onChange, onBlur, value}}) => (
-          <Input
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-            
-            autoCapitalize="words"
-            placeholder="Full name"
-            errorMessage={errors.full_name && errors.full_name.message}
-          />
-        )}
-        name="full_name"
-      />
+        <Controller
+          control={control}
+          rules={{
+            minLength: {
+              value: 3,
+              message: 'Full name has to be at least 3 characters.',
+            },
+          }}
+          render={({field: {onChange, onBlur, value}}) => (
+            <Input
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              autoCapitalize="words"
+              placeholder="Full name"
+              errorMessage={errors.full_name && errors.full_name.message}
+            />
+          )}
+          name="full_name"
+        />
 
-      <Button title="Submit" onPress={handleSubmit(onSubmit)} />
-    </View>
+        <Button title="Submit" onPress={handleSubmit(onSubmit)} />
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -238,10 +250,14 @@ EditProfile.propTypes = {
 };
 const styles = StyleSheet.create({
   image: {
-    width: '100%',
+    width: '20%',
     height: undefined,
     aspectRatio: 1.2,
     resizeMode: 'contain',
+    marginBottom: 40,
+  },
+  container: {
+    flex: 1,
   },
 });
 
