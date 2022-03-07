@@ -6,16 +6,13 @@ import {PrimaryButton} from '../components/Button';
 
 const OnBoardScreen = ({navigation}) => {
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#f7f1e9'}}>
       <View style={{height: 400}}>
-        <Image
-          style={style.logoImage}
-          source={require('../assets/onboardImage.png')}
-        />
+        <Image style={style.logoImage} source={require('../assets/logo.png')} />
       </View>
       <View style={style.textContainer}>
         <View>
-          <Text style={style.textHeader}>BoostIQ</Text>
+          {/* <Text style={style.textHeader}>BoostIQ</Text>
           <Text
             style={{
               marginTop: 10,
@@ -26,7 +23,7 @@ const OnBoardScreen = ({navigation}) => {
             }}
           >
             Join the Community to add, share and boost your knowledge
-          </Text>
+          </Text> */}
         </View>
         {/* <View style={style.indicatorContainer}>
           <View style={style.currentIndicator} />
@@ -44,12 +41,12 @@ const OnBoardScreen = ({navigation}) => {
 
 const style = StyleSheet.create({
   logoImage: {
-    width: '50%',
-    position: 'absolute',
+    
     resizeMode: 'contain',
-    top: -80,
-    right: 50,
+    top: 280,
+    alignSelf: 'center',
     margin: 30,
+
   },
   textContainer: {
     flex: 1,

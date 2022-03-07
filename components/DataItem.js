@@ -29,26 +29,6 @@ const DataItem = ({navigation, singleMedia, myFilesOnly}) => {
     ]);
   };
 
-  const PostFooter = () => (
-    <View
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-      }}
-    >
-      <Icon
-        imgStyle={{width: 23, height: 23}}
-        imgUrl={postIcons[0].likedImageUrl}
-      />
-      <View style={{flex: 1, alignItems: 'flex-end'}}>
-        <Icon
-          imgStyle={{width: 23, height: 23}}
-          imgUrl={postIcons[1].imageUrl}
-        />
-      </View>
-    </View>
-  );
-
   const Icon = ({imgStyle, imgUrl}) => (
     <TouchableOpacity>
       <Image style={imgStyle} source={{uri: imgUrl}} />
@@ -63,6 +43,7 @@ const DataItem = ({navigation, singleMedia, myFilesOnly}) => {
       }}
     >
       <Avatar
+        containerStyle={{borderColor: 'red'}}
         size="large"
         source={{uri: uploadsUrl + singleMedia.thumbnails.w160}}
       ></Avatar>
@@ -70,11 +51,9 @@ const DataItem = ({navigation, singleMedia, myFilesOnly}) => {
         <ListItem.Title numberOfLines={1} h4>
           {singleMedia.title}
         </ListItem.Title>
-        <Divider padding={5} width={1} orientation="vertical" />
-        <ListItem.Subtitle numberOfLines={1}>
+        <ListItem.Subtitle numberOfLines={1} h5>
           {singleMedia.description}
         </ListItem.Subtitle>
-        <PostFooter />
         {myFilesOnly && (
           <ButtonGroup
             onPress={(index) => {

@@ -9,31 +9,34 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {uploadsUrl} from '../utils/variables';
-import {Avatar, Button, Card, ListItem, Text} from 'react-native-elements';
+import {
+  Avatar,
+  Button,
+  Card,
+  Divider,
+  ListItem,
+  Text,
+} from 'react-native-elements';
 import {Video} from 'expo-av';
-import {useComment, useFavourite, useTag, useUser} from '../hooks/ApiHooks';
+import {useFavourite, useTag, useUser} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MainContext} from '../contexts/MainContext';
 import postIcons from '../utils/postIcons';
-import {Navigation} from 'react-native-navigation';
-import Comment from './Comment';
+import PostCommentForm from '../components/PostCommentForm';
+import CommentList from '../components/CommentList';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
-const Single = ({route, Navigation}) => {
+const Single = ({route}) => {
   // console.log('route:', route);
   const {file} = route.params;
   const videoRef = useRef(null);
   const {getUserById} = useUser();
   const {getFilesByTag} = useTag();
-  const {postFavourite, getFavouritesByFileId, deleteFavourite} =
-    useFavourite();
+  const {postFavourite, getFavouritesByFileId, deleteFavourite} = useFavourite();
   const [owner, setOwner] = useState({username: 'fetching...'});
   const [avatar, setAvatar] = useState('http://placekitten.com/180');
   const [likes, setLikes] = useState([]);
   const [userLike, setUserLike] = useState(false);
-  const {postComment, getCommentsByFileId, deleteComment} = useComment();
-  const [comments, setComments] = useState([]);
-  const [userComment, setUserCommment] = useState(false);
-
   const {user} = useContext(MainContext);
 
   const fetchOwner = async () => {
@@ -66,28 +69,14 @@ const Single = ({route, Navigation}) => {
     try {
       const likesData = await getFavouritesByFileId(file.file_id);
       setLikes(likesData);
-      // To check if user id of of logged in user is included in data and
+      // TODO: check if user id of of logged in user is included in data and
       // set state userLike accordingly
       likesData.forEach((like) => {
         like.user_id === user.user_id && setUserLike(true);
       });
     } catch (error) {
-      // notify error to user in the likes
+      // TODO: how should user be notified?
       console.error('fetchLikes() error', error);
-    }
-  };
-  const fetchComments = async () => {
-    try {
-      const commentsData = await getCommentsByFileId(file.file_id);
-      setComments(commentsData);
-      // To check if user id of of logged in user is included in data and
-      // set state userLike accordingly
-      commentsData.forEach((comment) => {
-        comment.user_id === user.user_id && setUserCommment(true);
-      });
-    } catch (error) {
-      // notify error to user in the likes
-      console.error('fetchComments() error', error);
     }
   };
 
@@ -97,7 +86,7 @@ const Single = ({route, Navigation}) => {
       const response = await postFavourite(file.file_id, token);
       response && setUserLike(true);
     } catch (error) {
-      // error createFavourites
+      // TODO: what to do if user has liked this image already?
       console.error('createFavourite error', error);
     }
   };
@@ -108,19 +97,8 @@ const Single = ({route, Navigation}) => {
       const response = await deleteFavourite(file.file_id, token);
       response && setUserLike(false);
     } catch (error) {
-      //if user has not liked this image error message
+      // TODO: what to do if user has not liked this image already?
       console.error('removeFavourite error', error);
-    }
-  };
-
-  const createComment = async () => {
-    try {
-      const token = await AsyncStorage.getItem('userToken');
-      const response = await postComment(file.file_id, token);
-      response && setUserCommment(true);
-    } catch (error) {
-      // error createFavourites
-      console.error('createComment error', error);
     }
   };
 
@@ -131,18 +109,25 @@ const Single = ({route, Navigation}) => {
 
   useEffect(() => {
     fetchLikes();
-    fetchComments();
-  }, [userLike, userComment]);
+  }, [userLike]);
 
   //console.log('likes', likes, 'userlike', userLike);
-  console.log('comments', comments, 'userComment', userComment);
 
   return (
     <ScrollView>
-      <Card>
-        <ListItem>
-          <Avatar source={{uri: avatar}} style={styles.userImage} />
-          <Text>{owner.username}</Text>
+      <Card
+        containerStyle={{
+          borderRadius: 8,
+          shadowOffset: 5,
+          shadowOpacity: 0.5,
+          backgroundColor: '#f7f9fc',
+        }}
+      >
+        <ListItem containerStyle={{backgroundColor: '#f7f9fc'}}>
+          <Image source={{uri: avatar}} style={styles.userImage} />
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>
+            {owner.username}
+          </Text>
         </ListItem>
         <Card.Divider />
         {file.media_type === 'image' ? (
@@ -172,20 +157,17 @@ const Single = ({route, Navigation}) => {
           ></Video>
         )}
         <Card.Divider />
-        <Card.Title h3>{file.title}</Card.Title>
+        <Card.Title h4>{file.title}</Card.Title>
         <Card.Title>{file.time_added}</Card.Title>
         <Card.Divider />
         <Text style={styles.description}>{file.description}</Text>
-
-        <ListItem>
-          <View>
-            {!!likes.length && (
-              <Text>
-                {likes.length}
-                {likes.length > 1 ? ' Likes' : ' Like'}{' '}
-              </Text>
-            )}
-          </View>
+        <ListItem containerStyle={{backgroundColor: '#f7f9fc'}}>
+          {!!likes.length && (
+            <Text style={{fontSize:10}}>
+              {likes.length}
+              {likes.length > 1 ? ' Likes' : ' Like '}
+            </Text>
+          )}
           {userLike ? (
             <TouchableOpacity
               disabled={!userLike}
@@ -194,7 +176,7 @@ const Single = ({route, Navigation}) => {
               }}
             >
               <Image
-                style={{width: 23, height: 23}}
+                style={{width: 15, height: 15}}
                 source={{uri: postIcons[0].likedImageUrl}}
               />
             </TouchableOpacity>
@@ -206,13 +188,15 @@ const Single = ({route, Navigation}) => {
               }}
             >
               <Image
-                style={{width: 23, height: 23}}
+                style={{width: 15, height: 15}}
                 source={{uri: postIcons[0].imageUrl}}
               />
             </TouchableOpacity>
           )}
         </ListItem>
-        <Comment Navigation={Navigation} />
+
+        <PostCommentForm fileId={file.file_id} />
+        <CommentList fileId={file.file_id} />
       </Card>
     </ScrollView>
   );
@@ -221,7 +205,7 @@ const Single = ({route, Navigation}) => {
 const styles = StyleSheet.create({
   image: {
     width: '100%',
-    height: undefined,
+    height: 260,
     aspectRatio: 1,
     borderRadius: 10,
   },
@@ -229,7 +213,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 80,
-    aspectRatio: 4 / 3,
   },
   description: {
     marginBottom: 10,

@@ -4,24 +4,23 @@ import GlobalStyles from '../utils/GlobalStyles';
 import List from '../components/List';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
-import ListCategories from '../components/ListCatagories';
 import SearchView from '../components/SearchView';
+import ListbyCat from '../components/ListbyCat';
+import ListCategories from '../components/ListCatagories';
 
-const Home = ({navigation, route}) => {
+const ByCategory = ({navigation, route}) => {
   return (
     <SafeAreaView style={GlobalStyles.AndroidSafeArea}>
       <View style={{backgroundColor: 'white', padding: 15}}>
         <Header navigation={navigation} />
-        <ListCategories navigation={navigation} />
-        
       </View>
-      <List navigation={navigation} />
+      <ListbyCat navigation={navigation} route={route} />
     </SafeAreaView>
   );
 };
 
-Home.propTypes = {
+ByCategory.propTypes = {
   navigation: PropTypes.object,
 };
 
-export default Home;
+export default ByCategory;

@@ -4,6 +4,8 @@ import {useForm, Controller} from 'react-hook-form';
 import {useUser} from '../hooks/ApiHooks';
 import {Input, Button, Text} from 'react-native-elements';
 import {PropTypes} from 'prop-types';
+import COLORS from '../utils/colors';
+
 
 const RegisterForm = ({navigation}) => {
   const {postUser, checkUsername} = useUser();
@@ -63,7 +65,14 @@ const RegisterForm = ({navigation}) => {
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <Input
+            leftIcon={{
+              type: 'font-awesome',
+              name: 'user',
+              size: 20,
+              color: COLORS.darkOrange,
+            }}
             onBlur={onBlur}
+            style={{paddingLeft: 8}}
             onChangeText={onChange}
             value={value}
             autoCapitalize="none"
@@ -91,7 +100,14 @@ const RegisterForm = ({navigation}) => {
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <Input
+            leftIcon={{
+              type: 'font-awesome',
+              name: 'lock',
+              size: 20,
+              color: COLORS.darkOrange,
+            }}
             onBlur={onBlur}
+            style={{paddingLeft: 8}}
             onChangeText={onChange}
             value={value}
             autoCapitalize="none"
@@ -118,7 +134,14 @@ const RegisterForm = ({navigation}) => {
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <Input
+            leftIcon={{
+              type: 'font-awesome',
+              name: 'lock',
+              size: 20,
+              color: COLORS.darkOrange,
+            }}
             onBlur={onBlur}
+            style={{paddingLeft: 8}}
             onChangeText={onChange}
             value={value}
             autoCapitalize="none"
@@ -143,7 +166,14 @@ const RegisterForm = ({navigation}) => {
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <Input
+            leftIcon={{
+              type: 'font-awesome',
+              name: 'at',
+              size: 20,
+              color: COLORS.darkOrange,
+            }}
             onBlur={onBlur}
+            style={{paddingLeft: 8}}
             onChangeText={onChange}
             value={value}
             autoCapitalize="none"
@@ -164,6 +194,13 @@ const RegisterForm = ({navigation}) => {
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <Input
+            leftIcon={{
+              type: 'font-awesome',
+              name: 'user',
+              size: 20,
+              color: COLORS.darkOrange,
+            }}
+            style={{paddingLeft: 8}}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}

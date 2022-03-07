@@ -6,18 +6,14 @@ import PropTypes from 'prop-types';
 import {MainContext} from '../contexts/MainContext';
 import {appId} from '../utils/variables';
 import {SearchBar} from 'react-native-elements';
-
-import {SafeAreaView} from 'react-native-safe-area-context';
 import ListCategories from './ListCatagories';
-import SearchView from './SearchView';
 
-const List = ({navigation, myFilesOnly = false}) => {
+const ListbyCat = ({navigation, myFilesOnly = false, route}) => {
   const {loadMedia, loading} = useMedia(myFilesOnly);
+  const {category} = route.params;
   const [dataList, setDataList] = useState([]);
   const {update, setUpdate} = useContext(MainContext);
   const [search, setSearch] = useState('');
-
-  console.log('List load', loading);
 
   const getAllData = async (tag) => {
     try {
@@ -38,13 +34,28 @@ const List = ({navigation, myFilesOnly = false}) => {
       setDataList(result);
       setSearch(text);
     } else {
-      getAllData(appId);
+      if (category === 'All') getAllData(appId);
+
+      getAllData(`${appId}_${category.toLowerCase()}`);
       setSearch(text);
     }
   };
 
   useEffect(() => {
-    getAllData(appId);
+    let appIdentfier = appId;
+    if (
+      category === 'General' ||
+      category === 'Technology' ||
+      category === 'Business' ||
+      category === 'Programming' ||
+      category === 'History' ||
+      category === 'Management'
+    ) {
+      appIdentfier = `${appId}_${category.toLowerCase()}`;
+      getAllData(appIdentfier);
+    } else {
+      getAllData(appIdentfier);
+    }
   }, [update]);
 
   return (
@@ -56,12 +67,16 @@ const List = ({navigation, myFilesOnly = false}) => {
         onChangeText={(text) => searchData(text)}
         value={search}
         containerStyle={{
-          marginLeft: 10,
-          marginRight: 0,
-          borderRadius: 0,
+          borderWidth: 0,
+          borderRadius: 8,
+          borderColor: 'darkblue',
+          marginLeft: 15,
+          marginRight: 5,
+          backgroundColor: '#f7f9fc',
+          borderRadius: 20,
         }}
         style={{
-          borderRadius: 15,
+          borderRadius: 20,
           borderWidth: 1,
           backgroundColor: 'white',
           padding: 10,
@@ -84,9 +99,9 @@ const List = ({navigation, myFilesOnly = false}) => {
   );
 };
 
-List.propTypes = {
+ListbyCat.propTypes = {
   navigation: PropTypes.object,
   myFilesOnly: PropTypes.bool,
 };
 
-export default List;
+export default ListbyCat;

@@ -15,7 +15,7 @@ import Post from '../views/Post';
 import MyFiles from '../views/Myfiles';
 import EditProfile from '../views/EditProfile';
 import Modify from '../views/Modify';
-import Comment from '../views/Comment';
+import ByCategory from '../views/ByCategory';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -69,6 +69,7 @@ const StackScreen = () => {
             options={{headerShown: false}}
           ></Stack.Screen>
           <Stack.Screen name="Single" component={Single}></Stack.Screen>
+          <Stack.Screen name="Category" component={ByCategory}></Stack.Screen>
           <Stack.Screen
             name="Edit Profile"
             component={EditProfile}
@@ -76,7 +77,6 @@ const StackScreen = () => {
           <Stack.Screen name="Profile" component={Profile} />
           <Stack.Screen name="My Files" component={MyFiles}></Stack.Screen>
           <Stack.Screen name="Modify" component={Modify}></Stack.Screen>
-          <Stack.Screen name="Comment" component={Comment}></Stack.Screen>
         </>
       ) : (
         <>
@@ -85,6 +85,7 @@ const StackScreen = () => {
             component={OnBoardScreen}
             options={{headerShown: false}}
           ></Stack.Screen>
+
           <Stack.Screen
             name="Login"
             component={Login}

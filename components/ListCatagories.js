@@ -9,7 +9,7 @@ import {
 import categories from '../utils/catagories';
 import COLORS from '../utils/colors';
 
-const ListCategories = () => {
+const ListCategories = ({navigation}) => {
   const [selectedCategoryIndex, setSelectedCategoryIndex] = React.useState(0);
 
   return (
@@ -22,20 +22,27 @@ const ListCategories = () => {
         <TouchableOpacity
           key={index}
           activeOpacity={0.8}
-          onPress={() => setSelectedCategoryIndex(index)}
+          onPress={() => {
+            navigation.navigate('Category', {
+              category: `${category.name}`,
+            });
+
+            setSelectedCategoryIndex(index);
+          }}
         >
           <View
             style={{
               backgroundColor:
                 selectedCategoryIndex == index
-                  ? COLORS.blue
-                  : COLORS.lightViolate,
+                  ? COLORS.darkBlue
+                  : COLORS.darkOrange,
               ...style.categoryBtn,
             }}
           >
             <Text
               style={{
-                fontSize: 15,
+                fontSize: 12,
+                fontFamily: 'Roboto',
                 fontWeight: 'bold',
                 marginLeft: 10,
                 color:
@@ -60,7 +67,7 @@ const style = StyleSheet.create({
   },
   inputContainer: {
     flex: 1,
-    height: 50,
+    height: 30,
     borderRadius: 10,
     flexDirection: 'row',
     backgroundColor: COLORS.light,
@@ -69,7 +76,7 @@ const style = StyleSheet.create({
   },
   sortBtn: {
     width: 50,
-    height: 50,
+    height: 30,
     marginLeft: 10,
     backgroundColor: COLORS.primary,
     borderRadius: 10,
@@ -82,11 +89,14 @@ const style = StyleSheet.create({
     paddingHorizontal: 20,
   },
   categoryBtn: {
-    height: 45,
-    width: 120,
+    height: 20,
     marginRight: 7,
-    borderRadius: 30,
+    paddingRight: 10,
+    width: 'auto',
+    borderRadius: 10,
     alignItems: 'center',
+    alignSelf:'auto',
+    justifyContent: 'center',
     paddingHorizontal: 5,
     flexDirection: 'row',
   },

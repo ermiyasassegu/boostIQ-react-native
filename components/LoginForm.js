@@ -1,10 +1,11 @@
 import React, {useContext} from 'react';
-import {View, TouchableOpacity, Alert} from 'react-native';
+import {View, TouchableOpacity} from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
 import {MainContext} from '../contexts/MainContext';
 import {useLogin} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Button, Input, Text} from 'react-native-elements';
+import {Button, Input, Text, Icon} from 'react-native-elements';
+import COLORS from '../utils/colors';
 
 const LoginForm = ({navigation}) => {
   const {setIsLoggedIn, setUser} = useContext(MainContext);
@@ -28,12 +29,12 @@ const LoginForm = ({navigation}) => {
       setUser(userData.user);
       setIsLoggedIn(true);
     } catch (error) {
-      Alert.alert('Please check your username and password');
+      console.error(error);
     }
   };
 
   return (
-    <View style={{marginTop: 40}}>
+    <View>
       <Controller
         control={control}
         rules={{
@@ -45,6 +46,13 @@ const LoginForm = ({navigation}) => {
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <Input
+            leftIcon={{
+              type: 'font-awesome',
+              name: 'user',
+              size: 20,
+              color: COLORS.darkOrange,
+            }}
+            style={{paddingLeft: 8}}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -64,6 +72,13 @@ const LoginForm = ({navigation}) => {
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <Input
+            leftIcon={{
+              type: 'font-awesome',
+              name: 'lock',
+              size: 20,
+              color: COLORS.darkOrange,
+            }}
+            style={{paddingLeft: 8}}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}

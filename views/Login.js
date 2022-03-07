@@ -50,12 +50,9 @@ const Login = ({navigation}) => {
         behavior={Platform.OS === 'ios' ? 'padding' : ''}
         style={styles.container}
       >
-        <Image
-          style={styles.imageLogo}
-          source={require('../assets/boostIQLogo.png')}
-        />
 
-        <LoginForm navigation={navigation} />
+
+        <LoginForm navigation={navigation}  />
       </KeyboardAvoidingView>
     </TouchableOpacity>
   );
@@ -65,14 +62,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
-    paddingTop: 50,
     paddingHorizontal: 12,
-    marginTop: 40,
+    justifyContent: 'center',
+
+
   },
 
   imageLogo: {
-    height: 100,
-    width: 100,
     alignSelf: 'center',
     margin: 20,
   },

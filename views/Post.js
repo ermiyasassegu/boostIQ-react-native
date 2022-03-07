@@ -9,7 +9,7 @@ import {useMedia, useTag} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import {useFocusEffect} from '@react-navigation/native';
 import {appId} from '../utils/variables';
-import {Video} from 'expo-av';
+import RNPickerSelect from 'react-native-picker-select';
 
 const Post = ({navigation}) => {
   const [image, setImage] = useState(
@@ -20,6 +20,7 @@ const Post = ({navigation}) => {
   const {postMedia, loading} = useMedia();
   const {postTag} = useTag();
   const {update, setUpdate} = useContext(MainContext);
+  const [categoryItem, setCategoryItem] = useState();
 
   const {
     control,
@@ -93,8 +94,17 @@ const Post = ({navigation}) => {
         },
         token
       );
+
+      const tagCatResponse = await postTag(
+        {
+          file_id: response.file_id,
+          tag: `${appId}_${categoryItem}`,
+        },
+        token
+      );
       console.log('tag response', tagResponse);
       tagResponse &&
+        tagCatResponse &&
         Alert.alert('File', 'Successfully uploaded', [
           {
             text: 'Ok',
@@ -171,6 +181,22 @@ const Post = ({navigation}) => {
           )}
           name="description"
         />
+
+        <RNPickerSelect
+          placeholder={{label: 'Select a category', value: null}}
+          useNativeAndroidPickerStyle={false}
+          onValueChange={(categoryItem) => setCategoryItem(categoryItem)}
+          name="category"
+          items={[
+            {label: 'General', value: 'general'},
+            {label: 'Technology', value: 'technology'},
+            {label: 'Business', value: 'business'},
+            {label: 'Programming', value: 'programming'},
+            {label: 'History', value: 'history'},
+            {label: 'Management', value: 'management'},
+          ]}
+          style={pickerSelectStyles}
+        />
         <View style={styles.postBtn}>
           <Button
             backGroundColor="blue"
@@ -197,6 +223,30 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 20,
     justifyContent: 'space-around',
+  },
+});
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+  inputAndroid: {
+    fontSize: 16,
+    fontFamily: 'Roboto',
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderBottomWidth: 0.5,
+    marginBottom: 15,
+    borderColor: 'purple',
+    borderRadius: 8,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
   },
 });
 

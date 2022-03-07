@@ -20,10 +20,10 @@ const doFetch = async (url, options = {}) => {
 };
 
 const useMedia = (myFilesOnly) => {
-  const [mediaArray, setMediaArray] = useState([]);
   const [loading, setLoading] = useState(false);
   const {update, user} = useContext(MainContext);
-  const loadMedia = async (start = 0, limit = 10) => {
+
+  const loadMedia = async (appId) => {
     setLoading(true);
     try {
       let json = await useTag().getFilesByTag(appId);
@@ -36,12 +36,11 @@ const useMedia = (myFilesOnly) => {
           const response = await fetch(baseUrl + 'media/' + item.file_id);
           const mediaData = await response.json();
           // console.log(mediaData);
+
           return mediaData;
         })
       );
-      setMediaArray(media);
-      // console.log(mediaArray);
-      //setLoading(false);
+      return media;
     } catch (error) {
       console.error(error);
     } finally {
@@ -51,7 +50,7 @@ const useMedia = (myFilesOnly) => {
   // Call loadMedia() only once when the component is loaded
   // OR when the update state (MainContext) is changed
   useEffect(() => {
-    loadMedia(0, 5);
+    loadMedia(0, 15);
   }, [update]);
 
   const postMedia = async (formData, token) => {
@@ -89,7 +88,7 @@ const useMedia = (myFilesOnly) => {
     return await doFetch(`${baseUrl}media/${fileId}`, options);
   };
 
-  return {mediaArray, postMedia, putMedia, deleteMedia, loading};
+  return {loadMedia, postMedia, putMedia, deleteMedia, loading};
 };
 
 const useLogin = () => {
@@ -204,34 +203,35 @@ const useFavourite = () => {
   };
   return {postFavourite, getFavouritesByFileId, deleteFavourite};
 };
-
 const useComment = () => {
-  const postComment = async (fileId, token) => {
+  const getCommentsByFileId = async (fileId) => {
+    return await doFetch(`${baseUrl}comments/file/${fileId}`);
+  };
+
+  const postComment = async (comment, token) => {
     const options = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'x-access-token': token,
       },
-      body: JSON.stringify({file_id: fileId}),
+      body: JSON.stringify(comment),
     };
-    return await doFetch(`${baseUrl}comments`, options);
+
+    return doFetch(baseUrl + 'comments', options);
   };
 
-  const getCommentsByFileId = async (fileId) => {
-    return await doFetch(`${baseUrl}comments/file/${fileId}`);
-  };
-
-  const deleteComment = async (fileId, token) => {
+  const deleteComment = async (commentId, token) => {
     const options = {
       method: 'DELETE',
       headers: {
         'x-access-token': token,
       },
     };
-    return await doFetch(`${baseUrl}comments/file/${fileId}`, options);
-  };
-  return {postComment, getCommentsByFileId, deleteComment};
-};
 
+    return doFetch(`${baseUrl}comments/${commentId}`, options);
+  };
+
+  return {getCommentsByFileId, postComment, deleteComment};
+};
 export {useMedia, useLogin, useUser, useTag, useFavourite, useComment};

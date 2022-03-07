@@ -16,9 +16,6 @@ const Profile = ({navigation}) => {
   const fetchAvatar = async () => {
     try {
       const avatarArray = await getFilesByTag('avatar_' + user.user_id);
-      if (avatarArray.length === 0) {
-        return;
-      }
       const avatar = avatarArray.pop();
       setAvatar(uploadsUrl + avatar.filename);
     } catch (error) {
