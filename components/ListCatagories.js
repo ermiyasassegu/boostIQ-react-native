@@ -34,19 +34,21 @@ const ListCategories = ({navigation}) => {
             style={{
               backgroundColor:
                 selectedCategoryIndex == index
-                  ? COLORS.darkBlue
-                  : COLORS.darkOrange,
+                  ? COLORS.blueBlack
+                  : COLORS.secondary,
               ...style.categoryBtn,
             }}
           >
             <Text
               style={{
-                fontSize: 12,
+                fontSize: 16,
                 fontFamily: 'Roboto',
                 fontWeight: 'bold',
                 marginLeft: 10,
                 color:
-                  selectedCategoryIndex == index ? COLORS.white : COLORS.white,
+                  selectedCategoryIndex == index
+                    ? COLORS.lightViolate
+                    : COLORS.pink,
               }}
             >
               {category.name}
@@ -95,7 +97,7 @@ const style = StyleSheet.create({
     width: 'auto',
     borderRadius: 10,
     alignItems: 'center',
-    alignSelf:'auto',
+    alignSelf: 'auto',
     justifyContent: 'center',
     paddingHorizontal: 5,
     flexDirection: 'row',

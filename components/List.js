@@ -68,7 +68,7 @@ const List = ({navigation, myFilesOnly = false}) => {
           height: 20,
         }}
       />
-
+      <ListCategories navigation={navigation} />
       <FlatList
         data={dataList}
         keyExtractor={(item) => item.file_id.toString()}
@@ -79,7 +79,7 @@ const List = ({navigation, myFilesOnly = false}) => {
             myFilesOnly={myFilesOnly}
           />
         )}
-      ></FlatList>
+      />
     </View>
   );
 };

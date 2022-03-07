@@ -12,8 +12,6 @@ const Home = ({navigation, route}) => {
     <SafeAreaView style={GlobalStyles.AndroidSafeArea}>
       <View style={{backgroundColor: 'white', padding: 15}}>
         <Header navigation={navigation} />
-        <ListCategories navigation={navigation} />
-        
       </View>
       <List navigation={navigation} />
     </SafeAreaView>
