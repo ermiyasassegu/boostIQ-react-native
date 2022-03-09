@@ -3,13 +3,11 @@ import React, {useCallback, useContext, useEffect} from 'react';
 import {useForm, Controller} from 'react-hook-form';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useComment} from '../hooks/ApiHooks';
-import { Input } from 'react-native-elements';
+import {Input} from 'react-native-elements';
 import {useFocusEffect} from '@react-navigation/native';
 import {MainContext} from '../contexts/MainContext';
 import PropTypes from 'prop-types';
 import COLORS from '../utils/colors';
-
-
 
 const PostCommentForm = ({fileId}) => {
   const {postComment} = useComment(fileId);
@@ -49,7 +47,7 @@ const PostCommentForm = ({fileId}) => {
         token
       );
       response &&
-        Alert.alert('Comment', "Your Comment has been Added", [
+        Alert.alert('Comment', 'Your Comment has been Added', [
           {
             text: 'OK',
             onPress: async () => {
@@ -75,7 +73,12 @@ const PostCommentForm = ({fileId}) => {
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <Input
-            containerStyle={{backgroundColor: '#f7f9fc', borderWidth: 0.5, borderRadius:8, margin: 0}}
+            containerStyle={{
+              backgroundColor: '#f7f9fc',
+              borderWidth: 0.5,
+              borderRadius: 8,
+              margin: 0,
+            }}
             rightIcon={{
               type: 'font-awesome',
               name: 'share',

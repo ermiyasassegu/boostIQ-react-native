@@ -1,4 +1,11 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -6,6 +13,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
+  KeyboardAvoidingView,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {uploadsUrl} from '../utils/variables';
@@ -17,14 +25,15 @@ import {
   ListItem,
   Text,
 } from 'react-native-elements';
+/* import {BottomSheetModal} from '@gorhom/bottom-sheet'; */
 import {Video} from 'expo-av';
 import {useFavourite, useTag, useUser} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MainContext} from '../contexts/MainContext';
 import postIcons from '../utils/postIcons';
+import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import PostCommentForm from '../components/PostCommentForm';
-import CommentList from '../components/CommentList';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import CommentLists from '../components/CommentLists';
 
 const Single = ({route}) => {
   // console.log('route:', route);
@@ -32,7 +41,8 @@ const Single = ({route}) => {
   const videoRef = useRef(null);
   const {getUserById} = useUser();
   const {getFilesByTag} = useTag();
-  const {postFavourite, getFavouritesByFileId, deleteFavourite} = useFavourite();
+  const {postFavourite, getFavouritesByFileId, deleteFavourite} =
+    useFavourite();
   const [owner, setOwner] = useState({username: 'fetching...'});
   const [avatar, setAvatar] = useState('http://placekitten.com/180');
   const [likes, setLikes] = useState([]);
@@ -112,97 +122,135 @@ const Single = ({route}) => {
   }, [userLike]);
 
   //console.log('likes', likes, 'userlike', userLike);
+  const bottomSheetModalRef = useRef();
+  // variables
+  const snapPoints = useMemo(() => ['25%', '50%'], []);
+
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+  const handleSheetChanges = useCallback((index) => {
+    console.log('handleSheetChanges', index);
+  }, []);
 
   return (
-    <ScrollView>
-      <Card
-        containerStyle={{
-          borderRadius: 8,
-          shadowOffset: 5,
-          shadowOpacity: 0.5,
-          backgroundColor: '#f7f9fc',
-        }}
-      >
-        <ListItem containerStyle={{backgroundColor: '#f7f9fc'}}>
-          <Image source={{uri: avatar}} style={styles.userImage} />
-          <Text style={{fontSize: 15, fontWeight: 'bold'}}>
-            {owner.username}
-          </Text>
-        </ListItem>
-        <Card.Divider />
-        {file.media_type === 'image' ? (
-          <Card.Image
-            source={{uri: uploadsUrl + file.filename}}
-            style={styles.image}
-            PlaceholderContent={<ActivityIndicator />}
-          />
-        ) : (
-          <Video
-            ref={videoRef}
-            style={styles.image}
-            source={{
-              uri: uploadsUrl + file.filename,
+    <BottomSheetModalProvider>
+      <View style={styles.container}>
+        <ScrollView>
+          <Card
+            containerStyle={{
+              borderRadius: 8,
+              shadowOffset: 5,
+              shadowOpacity: 0.5,
+              backgroundColor: '#f7f9fc',
             }}
-            // usePoster not working in IOS..
-            usePoster
-            posterSource={{
-              uri: uploadsUrl + file.screenshot,
-            }}
-            useNativeControls={true}
-            isLooping
-            resizeMode="contain"
-            onError={(error) => {
-              console.error('<Video> error', error);
-            }}
-          ></Video>
-        )}
-        <Card.Divider />
-        <Card.Title h4>{file.title}</Card.Title>
-        <Card.Title>{file.time_added}</Card.Title>
-        <Card.Divider />
-        <Text style={styles.description}>{file.description}</Text>
-        <ListItem containerStyle={{backgroundColor: '#f7f9fc'}}>
-          {!!likes.length && (
-            <Text style={{fontSize:10}}>
-              {likes.length}
-              {likes.length > 1 ? ' Likes' : ' Like '}
-            </Text>
-          )}
-          {userLike ? (
-            <TouchableOpacity
-              disabled={!userLike}
-              onPress={() => {
-                removeFavourite();
-              }}
-            >
-              <Image
-                style={{width: 15, height: 15}}
-                source={{uri: postIcons[0].likedImageUrl}}
+          >
+            <ListItem containerStyle={{backgroundColor: '#f7f9fc'}}>
+              <Image source={{uri: avatar}} style={styles.userImage} />
+              <Text style={{fontSize: 15, fontWeight: 'bold'}}>
+                {owner.username}
+              </Text>
+            </ListItem>
+            <Card.Divider />
+            {file.media_type === 'image' ? (
+              <Card.Image
+                source={{uri: uploadsUrl + file.filename}}
+                style={styles.image}
+                PlaceholderContent={<ActivityIndicator />}
               />
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              disabled={userLike}
-              onPress={() => {
-                createFavourite();
-              }}
+            ) : (
+              <Video
+                ref={videoRef}
+                style={styles.image}
+                source={{
+                  uri: uploadsUrl + file.filename,
+                }}
+                // usePoster not working in IOS..
+                usePoster
+                posterSource={{
+                  uri: uploadsUrl + file.screenshot,
+                }}
+                useNativeControls={true}
+                isLooping
+                resizeMode="contain"
+                onError={(error) => {
+                  console.error('<Video> error', error);
+                }}
+              ></Video>
+            )}
+            <Card.Divider />
+            <Card.Title h4>{file.title}</Card.Title>
+            <Card.Title>{file.time_added}</Card.Title>
+            <Card.Divider />
+            <Text style={styles.description}>{file.description}</Text>
+            <ListItem containerStyle={{backgroundColor: '#f7f9fc'}}>
+              {!!likes.length && (
+                <Text style={{fontSize: 10}}>
+                  {likes.length}
+                  {likes.length > 1 ? ' Likes' : ' Like '}
+                </Text>
+              )}
+              {userLike ? (
+                <TouchableOpacity
+                  disabled={!userLike}
+                  onPress={() => {
+                    removeFavourite();
+                  }}
+                >
+                  <Image
+                    style={{width: 15, height: 15}}
+                    source={{uri: postIcons[0].likedImageUrl}}
+                  />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  disabled={userLike}
+                  onPress={() => {
+                    createFavourite();
+                  }}
+                >
+                  <Image
+                    style={{width: 15, height: 15}}
+                    source={{uri: postIcons[0].imageUrl}}
+                  />
+                </TouchableOpacity>
+              )}
+            </ListItem>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === 'ios' ? 'padding' : ''}
             >
-              <Image
-                style={{width: 15, height: 15}}
-                source={{uri: postIcons[0].imageUrl}}
-              />
-            </TouchableOpacity>
-          )}
-        </ListItem>
+              <PostCommentForm fileId={file.file_id} />
+            </KeyboardAvoidingView>
 
-        <PostCommentForm fileId={file.file_id} />
-        <CommentList fileId={file.file_id} />
-      </Card>
-    </ScrollView>
+            <Button onPress={handlePresentModalPress} title="show Comments" />
+
+            {/* All comments */}
+            <BottomSheetModal
+              ref={bottomSheetModalRef}
+              snapPoints={snapPoints}
+              index={0}
+              enablePanDownToClose={true}
+              onClose={() => setIsOpen(false)}
+              backgroundComponent={({style}) => (
+                <View style={[style, {backgroundColor: 'green'}]} />
+              )}
+            >
+              <CommentLists fileId={file.file_id} />
+            </BottomSheetModal>
+          </Card>
+        </ScrollView>
+      </View>
+    </BottomSheetModalProvider>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 24,
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+  },
   image: {
     width: '100%',
     height: 260,

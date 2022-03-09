@@ -56,7 +56,7 @@ const ListbyCat = ({navigation, myFilesOnly = false, route}) => {
     } else {
       getAllData(appIdentfier);
     }
-  }, [update]);
+  }, []);
 
   return (
     <View>

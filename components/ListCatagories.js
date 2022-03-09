@@ -23,7 +23,8 @@ const ListCategories = ({navigation}) => {
           key={index}
           activeOpacity={0.8}
           onPress={() => {
-            navigation.navigate('Category', {
+            /*  if ((category = !'All')) { */
+            navigation.push('Category', {
               category: `${category.name}`,
             });
 
@@ -31,24 +32,26 @@ const ListCategories = ({navigation}) => {
           }}
         >
           <View
-            style={{
+          /*  style={{
               backgroundColor:
                 selectedCategoryIndex == index
                   ? COLORS.blueBlack
                   : COLORS.secondary,
               ...style.categoryBtn,
-            }}
+            }} */
           >
             <Text
               style={{
+                padding: 10,
                 fontSize: 16,
                 fontFamily: 'Roboto',
                 fontWeight: 'bold',
-                marginLeft: 10,
+                borderWidth: 1,
+                borderColor: 'black',
+                margin: 10,
+                borderRadius: 10,
                 color:
-                  selectedCategoryIndex == index
-                    ? COLORS.lightViolate
-                    : COLORS.pink,
+                  selectedCategoryIndex == index ? COLORS.blue : COLORS.grey,
               }}
             >
               {category.name}

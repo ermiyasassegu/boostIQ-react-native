@@ -20,6 +20,7 @@ const doFetch = async (url, options = {}) => {
 };
 
 const useMedia = (myFilesOnly) => {
+  const [mediaArray, setMediaArray] = useState([]);
   const [loading, setLoading] = useState(false);
   const {update, user} = useContext(MainContext);
 
@@ -40,6 +41,7 @@ const useMedia = (myFilesOnly) => {
           return mediaData;
         })
       );
+      setMediaArray(media);
       return media;
     } catch (error) {
       console.error(error);
@@ -88,7 +90,7 @@ const useMedia = (myFilesOnly) => {
     return await doFetch(`${baseUrl}media/${fileId}`, options);
   };
 
-  return {loadMedia, postMedia, putMedia, deleteMedia, loading};
+  return {mediaArray, loadMedia, postMedia, putMedia, deleteMedia, loading};
 };
 
 const useLogin = () => {

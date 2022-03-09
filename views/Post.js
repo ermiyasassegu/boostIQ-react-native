@@ -10,6 +10,7 @@ import {MainContext} from '../contexts/MainContext';
 import {useFocusEffect} from '@react-navigation/native';
 import {appId} from '../utils/variables';
 import RNPickerSelect from 'react-native-picker-select';
+import {Video} from 'expo-av';
 
 const Post = ({navigation}) => {
   const [image, setImage] = useState(

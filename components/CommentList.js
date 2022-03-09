@@ -1,51 +1,95 @@
-import {FlatList, View, StyleSheet, Text} from 'react-native';
+import {Text, View, Alert} from 'react-native';
 import React, {useState, useEffect, useContext} from 'react';
-import {useComment} from '../hooks/ApiHooks';
-import PropTypes from 'prop-types';
+import {List, IconButton} from 'react-native-paper';
+import {useUser, useComment} from '../hooks/ApiHooks';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MainContext} from '../contexts/MainContext';
-import CommentListItems from './CommentListItems';
+import COLORS from '../utils/colors';
 
-const CommentList = ({fileId}) => {
-  const {getCommentsByFileId} = useComment();
-  const [comments, setComments] = useState([]);
+const CommentList = ({comment}) => {
+  const {getUserById} = useUser();
+  const {deleteComment} = useComment();
+  const [commentOwner, setCommentOwner] = useState({username: 'fetching...'});
+  const {user} = useContext(MainContext);
   const {commentUpdate, setCommentUpdate} = useContext(MainContext);
 
-  const fetchComments = async () => {
+  const fetchCommentOwner = async () => {
     try {
-      const commentsData = await getCommentsByFileId(fileId);
-      setComments(commentsData);
+      const token = await AsyncStorage.getItem('userToken');
+      const userData = await getUserById(comment.user_id, token);
+      setCommentOwner(userData);
     } catch (error) {
-      console.error('fetchComments error', error.message);
+      console.error('fetchCommentOwner error ', error.message);
+      setCommentOwner({username: '[not available]'});
     }
   };
 
+  const removeComment = async () => {
+    Alert.alert(
+      'Delete',
+      'Commet will be DELETED permanently. \n Are you sure you want to delete your comment',
+      [
+        {text: 'Cancel'},
+        {
+          text: 'OK',
+          onPress: async () => {
+            try {
+              const token = await AsyncStorage.getItem('userToken');
+              const response = await deleteComment(comment.comment_id, token);
+              response && setCommentUpdate(commentUpdate + 1);
+            } catch (error) {
+              console.error(error);
+            }
+          },
+        },
+      ]
+    );
+  };
+
   useEffect(() => {
-    fetchComments();
-  }, [commentUpdate]);
+    fetchCommentOwner();
+  }, []);
 
   return (
-    <View
-      style={{
-        height: '100%',
-        marginTop: 5,
-      }}
-    >
-      <Text style={styles.commentTitle}>{comments.length} Comments </Text>
-      <FlatList
-        data={comments}
-        keyExtractor={(item) => item.comment_id.toString()}
-        renderItem={({item}) => <CommentListItems comment={item} />}
-      />
-    </View>
+    <List.Item
+      titleStyle={{fontSize: 15, fontWeight: '500'}}
+      description={
+        <View style={{flexDirection: 'row', marginTop: 10}}>
+          <Text style={{color: 'white'}}>
+            <Text style={{fontWeight: '600', color: 'yellow'}}>
+              {commentOwner.username + ' :'}
+            </Text>
+            {''}
+            {comment.comment}
+          </Text>
+        </View>
+      }
+      /*       left={() => <AvatarComponent userId={comment.user_id} />}
+       */ right={() => (
+        <>
+          <Text
+            style={{
+              position: 'absolute',
+              //top: 7,
+              right: 0,
+            }}
+          ></Text>
+          {commentOwner.user_id === user.user_id && (
+            <IconButton
+              icon="delete"
+              color={COLORS.darkOrange}
+              size={15}
+              style={{marginTop: 15}}
+              onPress={() => {
+                removeComment();
+              }}
+            />
+          )}
+        </>
+      )}
+      style={{padding: 5}}
+    />
   );
-};
-
-const styles = StyleSheet.create({
-  commentTitle: {fontSize: 16, fontWeight: '700', paddingBottom: 5},
-});
-
-CommentList.propTypes = {
-  fileId: PropTypes.number,
 };
 
 export default CommentList;

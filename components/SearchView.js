@@ -1,33 +1,27 @@
 import React, {useEffect, useState} from 'react';
 import {SearchBar} from 'react-native-elements';
 import {View, StyleSheet, FlatList} from 'react-native';
-import COLORS from '../utils/colors';
 import DataItem from './DataItem';
 import {useMedia} from '../hooks/ApiHooks';
 import PropTypes from 'prop-types';
+import {appId} from '../utils/variables';
 
-const SearchView = ({navigation}) => {
-  const [filteredData, setFilteredData] = useState([]);
-  //const [masterData, setMasterData] = useState([]);
+const SearchView = ({navigation, myFilesOnly = false}) => {
+  const {loadMedia} = useMedia(myFilesOnly);
+  const [dataList, setDataList] = useState([]);
   const [search, setSearch] = useState('');
-  const {mediaArray} = useMedia(false);
 
-  const searchFilter = (text) => {
-    // Check if searched text is not blank
+  const searchData = (text) => {
     if (text) {
-      //  Filter the masterData Update FilteredData
-      const newData = mediaArray.filter((item) => {
-        const itemData = item.title
-          ? item.title.toUpperCase()
-          : ''.toUpperCase();
-        const textData = text.toUpperCase();
-        return itemData.indexOf(textData) > -1;
+      const result = dataList.filter(function (item) {
+        const title = item.title ? item.title.toUpperCase() : ''.toUpperCase();
+        const serachText = text.toUpperCase();
+        return title.indexOf(serachText) > -1;
       });
-      setFilteredData(newData);
+      setDataList(result);
       setSearch(text);
     } else {
-      // Inserted text is blank Update FilteredData with masterData
-      setFilteredData(mediaArray);
+      getAllData(appId);
       setSearch(text);
     }
   };
@@ -35,16 +29,34 @@ const SearchView = ({navigation}) => {
   return (
     <View style={styles.view}>
       <SearchBar
-        style={{backgroundColor: COLORS.light, borderRadius: 30}}
-        placeholder="Search Here..."
-        onChangeText={(text) => searchFilter(text)}
+        round
+        platform="android"
+        cancelButtonTitle="Cancel"
+        onChangeText={(text) => searchData(text)}
         value={search}
+        containerStyle={{
+          marginLeft: 10,
+          marginRight: 0,
+          borderRadius: 0,
+        }}
+        style={{
+          borderRadius: 15,
+          borderWidth: 1,
+          backgroundColor: 'white',
+          padding: 10,
+          height: 20,
+        }}
       />
+
       <FlatList
-        data={filteredData}
+        data={dataList}
         keyExtractor={(item) => item.file_id.toString()}
         renderItem={({item}) => (
-          <DataItem navigation={navigation} singleMedia={item} />
+          <DataItem
+            navigation={navigation}
+            singleMedia={item}
+            myFilesOnly={myFilesOnly}
+          />
         )}
       />
     </View>
