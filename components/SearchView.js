@@ -11,6 +11,15 @@ const SearchView = ({navigation, myFilesOnly = false}) => {
   const [dataList, setDataList] = useState([]);
   const [search, setSearch] = useState('');
 
+  const getAllData = async (tag) => {
+    try {
+      const fetchData = await loadMedia(tag);
+      setDataList(fetchData);
+    } catch (error) {
+      console.error('Error while Fetching Data', error.message);
+    }
+  };
+
   const searchData = (text) => {
     if (text) {
       const result = dataList.filter(function (item) {
