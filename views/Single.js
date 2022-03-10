@@ -48,6 +48,7 @@ const Single = ({route}) => {
   const [likes, setLikes] = useState([]);
   const [userLike, setUserLike] = useState(false);
   const {user} = useContext(MainContext);
+  const [comments, setComments] = useState([]);
 
   const fetchOwner = async () => {
     try {

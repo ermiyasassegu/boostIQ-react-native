@@ -6,7 +6,6 @@ import {Input, Button, Text} from 'react-native-elements';
 import {PropTypes} from 'prop-types';
 import COLORS from '../utils/colors';
 
-
 const RegisterForm = ({navigation}) => {
   const {postUser, checkUsername} = useUser();
 
@@ -33,7 +32,14 @@ const RegisterForm = ({navigation}) => {
       const userData = await postUser(data);
       console.log('register onSubmit', userData);
       if (userData) {
-        Alert.alert('Success', 'User created successfully.');
+        Alert.alert('Success', 'User created successfully.', [
+          {
+            text: 'Ok',
+            onPress: () => {
+              navigation.push('Login');
+            },
+          },
+        ]);
       }
     } catch (error) {
       console.error(error);

@@ -51,7 +51,7 @@ const PostCommentForm = ({fileId}) => {
           {
             text: 'OK',
             onPress: async () => {
-              reset();
+              /* reset(); */
               setCommentUpdate(commentUpdate + 1);
             },
           },

@@ -8,7 +8,6 @@ import CommentList from './CommentList';
 const CommentLists = ({fileId}) => {
   const {getCommentsByFileId} = useComment();
   const [comments, setComments] = useState([]);
-  const {commentUpdate, setCommentUpdate} = useContext(MainContext);
 
   const fetchComments = async () => {
     try {
@@ -30,7 +29,12 @@ const CommentLists = ({fileId}) => {
         marginTop: 5,
       }}
     >
-      <Text style={styles.commentTitle}>{comments.length} Comments </Text>
+      {!!comments.length && (
+        <Text style={styles.commentTitle}>
+          View{comments.length > 1 ? ' all' : ' '} {comments.length}
+          {comments.length > 1 ? ' comments' : ' comment'}
+        </Text>
+      )}
       <FlatList
         data={comments}
         keyExtractor={(item) => item.comment_id.toString()}
