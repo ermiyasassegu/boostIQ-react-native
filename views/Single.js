@@ -48,7 +48,7 @@ const Single = ({route}) => {
   const [likes, setLikes] = useState([]);
   const [userLike, setUserLike] = useState(false);
   const {user} = useContext(MainContext);
-  const [comments, setComments] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchOwner = async () => {
     try {
@@ -119,7 +119,9 @@ const Single = ({route}) => {
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     fetchLikes();
+    setLoading(false);
   }, [userLike]);
 
   //console.log('likes', likes, 'userlike', userLike);

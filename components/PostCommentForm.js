@@ -11,7 +11,7 @@ import COLORS from '../utils/colors';
 
 const PostCommentForm = ({fileId}) => {
   const {postComment} = useComment(fileId);
-  const {commentUpdate, setCommentUpdate} = useContext(MainContext);
+  const {update, setUpdate} = useContext(MainContext);
 
   const {
     control,
@@ -30,9 +30,9 @@ const PostCommentForm = ({fileId}) => {
     }, [])
   );
 
-  useEffect(() => {
+  /*  useEffect(() => {
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-  }, []);
+  }, []); */
 
   const onSubmit = async (comment) => {
     try {
@@ -51,8 +51,8 @@ const PostCommentForm = ({fileId}) => {
           {
             text: 'OK',
             onPress: async () => {
-              /* reset(); */
-              setCommentUpdate(commentUpdate + 1);
+              reset();
+              setUpdate(update + 1);
             },
           },
         ]);

@@ -11,7 +11,7 @@ const CommentList = ({comment}) => {
   const {deleteComment} = useComment();
   const [commentOwner, setCommentOwner] = useState({username: 'fetching...'});
   const {user} = useContext(MainContext);
-  const {commentUpdate, setCommentUpdate} = useContext(MainContext);
+  const {update, setUpdate} = useContext(MainContext);
 
   const fetchCommentOwner = async () => {
     try {
@@ -36,7 +36,7 @@ const CommentList = ({comment}) => {
             try {
               const token = await AsyncStorage.getItem('userToken');
               const response = await deleteComment(comment.comment_id, token);
-              response && setCommentUpdate(commentUpdate + 1);
+              response && setUpdate(update + 1);
             } catch (error) {
               console.error(error);
             }

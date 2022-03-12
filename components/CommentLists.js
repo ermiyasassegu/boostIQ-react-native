@@ -8,6 +8,7 @@ import CommentList from './CommentList';
 const CommentLists = ({fileId}) => {
   const {getCommentsByFileId} = useComment();
   const [comments, setComments] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchComments = async () => {
     try {
@@ -19,7 +20,9 @@ const CommentLists = ({fileId}) => {
   };
 
   useEffect(() => {
+    setLoading(true);
     fetchComments();
+    setLoading(false);
   }, [comments]);
 
   return (
