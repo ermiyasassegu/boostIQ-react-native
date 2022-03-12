@@ -10,7 +10,7 @@ import categories from '../utils/catagories';
 import COLORS from '../utils/colors';
 
 const ListCategories = ({navigation}) => {
-  const [selectedCategoryIndex, setSelectedCategoryIndex] = React.useState(0);
+  const [selectedCategoryIndex, setSelectedCategoryIndex] = React.useState('0');
 
   return (
     <ScrollView

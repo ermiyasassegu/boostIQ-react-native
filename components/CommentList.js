@@ -9,9 +9,10 @@ import COLORS from '../utils/colors';
 const CommentList = ({comment}) => {
   const {getUserById} = useUser();
   const {deleteComment} = useComment();
-  const [commentOwner, setCommentOwner] = useState({username: 'fetching...'});
+  const [commentOwner, setCommentOwner] = useState(false);
   const {user} = useContext(MainContext);
   const {update, setUpdate} = useContext(MainContext);
+  const [userComment, setUserComment] = useState(false);
 
   const fetchCommentOwner = async () => {
     try {
@@ -36,7 +37,7 @@ const CommentList = ({comment}) => {
             try {
               const token = await AsyncStorage.getItem('userToken');
               const response = await deleteComment(comment.comment_id, token);
-              response && setUpdate(update + 1);
+              response && setUserComment(false);
             } catch (error) {
               console.error(error);
             }

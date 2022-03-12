@@ -48,7 +48,7 @@ const CommentLists = ({fileId}) => {
 };
 
 const styles = StyleSheet.create({
-  commentTitle: {fontSize: 16, fontWeight: '700', paddingBottom: 5},
+  commentTitle: {fontSize: 16, fontWeight: '500', padding: 10},
 });
 
 CommentList.propTypes = {

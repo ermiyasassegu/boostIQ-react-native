@@ -86,7 +86,7 @@ const ListbyCat = ({navigation, myFilesOnly = false, route}) => {
 
       <FlatList
         data={dataList}
-        keyExtractor={(item) => item.file_id.toString()}
+        keyExtractor={(item) => item.file_id?.toString()}
         renderItem={({item}) => (
           <DataItem
             navigation={navigation}

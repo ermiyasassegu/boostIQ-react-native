@@ -1,5 +1,5 @@
 const categories = [
-  {id: '1', name: 'All'},
+  {id: '1', name: 'General'},
   {id: '2', name: 'Technology'},
   {id: '3', name: 'Business'},
   {id: '4', name: 'Programming'},

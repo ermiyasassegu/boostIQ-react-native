@@ -127,7 +127,7 @@ const Single = ({route}) => {
   //console.log('likes', likes, 'userlike', userLike);
   const bottomSheetModalRef = useRef();
   // variables
-  const snapPoints = useMemo(() => ['25%', '50%'], []);
+  const snapPoints = useMemo(() => ['35%', '30%'], []);
 
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();

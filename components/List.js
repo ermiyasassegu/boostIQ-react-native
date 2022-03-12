@@ -7,9 +7,11 @@ import {MainContext} from '../contexts/MainContext';
 import {appId} from '../utils/variables';
 
 const List = ({navigation, myFilesOnly = false}) => {
-  const {loadMedia} = useMedia(myFilesOnly);
+  const {loadMedia, loading} = useMedia(myFilesOnly);
   const [dataList, setDataList] = useState([]);
-  //console.log('Loadmedia', loadMedia);
+  const {update, setUpdate} = useContext(MainContext);
+
+  console.log('List load', loading);
 
   const getAllData = async (tag) => {
     try {
@@ -22,11 +24,11 @@ const List = ({navigation, myFilesOnly = false}) => {
 
   useEffect(() => {
     getAllData(appId);
-  }, [dataList]);
+  }, [update]);
   return (
     <FlatList
       data={dataList}
-      keyExtractor={(item) => item.file_id.toString()}
+      keyExtractor={(item) => item.file_id?.toString()}
       renderItem={({item}) => (
         <DataItem
           navigation={navigation}
