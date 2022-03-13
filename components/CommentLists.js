@@ -21,10 +21,8 @@ const CommentLists = ({fileId}) => {
   };
 
   useEffect(() => {
-    
     fetchComments();
-    
-  }, [update, comments]);
+  }, [update]);
 
   return (
     <View

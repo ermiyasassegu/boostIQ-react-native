@@ -41,8 +41,8 @@ const List = ({navigation, myFilesOnly = false}) => {
             myFilesOnly={myFilesOnly}
           />
         )}
-        maxToRenderPerBatch={10}
         inverted
+        maxToRenderPerBatch={10}
       />
     </View>
   );
