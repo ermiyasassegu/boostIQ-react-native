@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import {FlatList, Text, View} from 'react-native';
 import {useMedia} from '../hooks/ApiHooks';
 import DataItem from './DataItem';
 import PropTypes from 'prop-types';
@@ -27,17 +27,24 @@ const List = ({navigation, myFilesOnly = false}) => {
   }, [update]);
 
   return (
-    <FlatList
-      data={dataList}
-      keyExtractor={(item) => item.file_id?.toString()}
-      renderItem={({item}) => (
-        <DataItem
-          navigation={navigation}
-          singleMedia={item}
-          myFilesOnly={myFilesOnly}
-        />
-      )}
-    />
+    <View>
+      <Text style={{fontSize: 30, color: 'grey', margin: 10, padding: 5}}>
+        Recently Added
+      </Text>
+      <FlatList
+        data={dataList}
+        keyExtractor={(item) => item.file_id?.toString()}
+        renderItem={({item}) => (
+          <DataItem
+            navigation={navigation}
+            singleMedia={item}
+            myFilesOnly={myFilesOnly}
+          />
+        )}
+        maxToRenderPerBatch={10}
+        inverted
+      />
+    </View>
   );
 };
 

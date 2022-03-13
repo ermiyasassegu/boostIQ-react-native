@@ -225,7 +225,11 @@ const Single = ({route}) => {
               <PostCommentForm fileId={file.file_id} />
             </KeyboardAvoidingView>
 
-            <Button onPress={handlePresentModalPress} title="show Comments" />
+            <Button
+              style={{marginTop: 10, borderRadius: 15, backgroundColor: 'cyan'}}
+              onPress={handlePresentModalPress}
+              title="show Comments"
+            />
 
             {/* All comments */}
             <BottomSheetModal

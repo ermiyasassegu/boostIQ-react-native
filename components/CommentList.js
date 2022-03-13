@@ -49,7 +49,7 @@ const CommentList = ({comment}) => {
 
   useEffect(() => {
     fetchCommentOwner();
-  }, []);
+  }, [commentOwner]);
 
   return (
     <List.Item

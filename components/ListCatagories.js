@@ -38,10 +38,10 @@ const ListCategories = ({setCategory}) => {
           >
             <Text
               style={{
-                fontSize: 16,
+                fontSize: 18,
                 fontFamily: 'Roboto',
                 fontWeight: 'bold',
-                marginLeft: 10,
+                marginLeft: 15,
                 color:
                   selectedCategoryIndex == index
                     ? COLORS.lightViolate
@@ -88,11 +88,11 @@ const style = StyleSheet.create({
     paddingHorizontal: 20,
   },
   categoryBtn: {
-    height: 20,
-    marginRight: 7,
+    height: 30,
+    marginRight: 15,
     paddingRight: 10,
     width: 'auto',
-    borderRadius: 10,
+    borderRadius: 15,
     alignItems: 'center',
     alignSelf: 'auto',
     justifyContent: 'center',
