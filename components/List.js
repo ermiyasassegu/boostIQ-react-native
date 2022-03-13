@@ -25,6 +25,7 @@ const List = ({navigation, myFilesOnly = false}) => {
   useEffect(() => {
     getAllData(appId);
   }, [update]);
+
   return (
     <FlatList
       data={dataList}

@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import {FlatList, Text, View} from 'react-native';
 import {useMedia} from '../hooks/ApiHooks';
 import DataItem from './DataItem';
 import PropTypes from 'prop-types';
@@ -8,12 +8,15 @@ import {appId} from '../utils/variables';
 import {SearchBar} from 'react-native-elements';
 import ListCategories from './ListCatagories';
 
-const ListbyCat = ({navigation, myFilesOnly = false, route}) => {
+const ListbyCat = ({navigation, myFilesOnly = false}) => {
   const {loadMedia, loading} = useMedia(myFilesOnly);
-  const {category} = route.params;
+  /* const {category} = route.params; */
   const [dataList, setDataList] = useState([]);
   const {update, setUpdate} = useContext(MainContext);
+  const [category, setCategory] = useState('');
   const [search, setSearch] = useState('');
+
+  console.log('List load', loading, ' Update: ', update);
 
   const getAllData = async (tag) => {
     try {
@@ -24,7 +27,7 @@ const ListbyCat = ({navigation, myFilesOnly = false, route}) => {
     }
   };
 
-  const searchData = (text) => {
+  /*  const searchData = (text) => {
     if (text) {
       const result = dataList.filter(function (item) {
         const title = item.title ? item.title.toUpperCase() : ''.toUpperCase();
@@ -39,7 +42,7 @@ const ListbyCat = ({navigation, myFilesOnly = false, route}) => {
       getAllData(`${appId}_${category.toLowerCase()}`);
       setSearch(text);
     }
-  };
+  }; */
 
   useEffect(() => {
     let appIdentfier = appId;
@@ -56,11 +59,11 @@ const ListbyCat = ({navigation, myFilesOnly = false, route}) => {
     } else {
       getAllData(appIdentfier);
     }
-  }, []);
+  }, [update, category]);
 
   return (
     <View>
-      <SearchBar
+      {/* <SearchBar
         round
         platform="android"
         cancelButtonTitle="Cancel"
@@ -82,9 +85,12 @@ const ListbyCat = ({navigation, myFilesOnly = false, route}) => {
           padding: 10,
           height: 20,
         }}
-      />
+      /> */}
+      <Text style={{fontSize: 30, color: 'grey'}}>Categories</Text>
+      <ListCategories setCategory={setCategory} />
 
       <FlatList
+        horizontal
         data={dataList}
         keyExtractor={(item) => item.file_id?.toString()}
         renderItem={({item}) => (
@@ -94,7 +100,7 @@ const ListbyCat = ({navigation, myFilesOnly = false, route}) => {
             myFilesOnly={myFilesOnly}
           />
         )}
-      ></FlatList>
+      />
     </View>
   );
 };

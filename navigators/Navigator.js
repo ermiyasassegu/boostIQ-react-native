@@ -69,13 +69,13 @@ const StackScreen = () => {
             options={{headerShown: false}}
           ></Stack.Screen>
           <Stack.Screen name="Single" component={Single}></Stack.Screen>
-          <Stack.Screen
+          {/* <Stack.Screen
             name="Category"
             component={ByCategory}
             options={({route}) => ({
               title: route.params.category,
             })}
-          ></Stack.Screen>
+          ></Stack.Screen> */}
           <Stack.Screen
             name="Edit Profile"
             component={EditProfile}

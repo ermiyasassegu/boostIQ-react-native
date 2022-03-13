@@ -8,13 +8,13 @@ import SearchView from '../components/SearchView';
 import ListbyCat from '../components/ListbyCat';
 import ListCategories from '../components/ListCatagories';
 
-const ByCategory = ({navigation, route}) => {
+const ByCategory = ({navigation}) => {
   return (
     <SafeAreaView style={GlobalStyles.AndroidSafeArea}>
       <View style={{backgroundColor: 'white', padding: 15}}>
         <Header navigation={navigation} />
       </View>
-      <ListbyCat navigation={navigation} route={route} />
+      <ListbyCat navigation={navigation} />
     </SafeAreaView>
   );
 };

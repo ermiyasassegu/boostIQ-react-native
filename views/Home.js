@@ -6,14 +6,15 @@ import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import SearchView from '../components/SearchView';
 import ListCatagories from '../components/ListCatagories';
+import ListbyCat from '../components/ListbyCat';
 
-const Home = ({navigation, setCategory}) => {
+const Home = ({navigation}) => {
   return (
     <SafeAreaView style={GlobalStyles.AndroidSafeArea}>
       <View style={{backgroundColor: 'white', padding: 15}}>
         <Header navigation={navigation} />
-        <SearchView navigation={navigation} />
-        <ListCatagories setCategory={setCategory} />
+        {/* <SearchView navigation={navigation} /> */}
+        <ListbyCat navigation={navigation} />
       </View>
       <List navigation={navigation} />
     </SafeAreaView>
